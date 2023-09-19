@@ -33,11 +33,13 @@ fi
 aws configure --profile s3-sync-action <<-EOF > /dev/null 2>&1
 ${AWS_ACCESS_KEY_ID}
 ${AWS_SECRET_ACCESS_KEY}
-${AWS_SESSION_TOKEN}
 ${AWS_REGION}
 text
 EOF
 
+if [ -n "${AWS_SESSION_TOKEN}" ]; then
+    aws configure --profile s3-sync-action set aws_session_token $AWS_SESSION_TOKEN
+fi
 # Sync using our dedicated profile and suppress verbose messages.
 # All other flags are optional via the `args:` directive.
 sh -c "aws s3 sync ${SOURCE_DIR:-.} s3://${AWS_S3_BUCKET}/${DEST_DIR} \
